@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block content %} {{super()}}
+<div id="home-page">
+  <div class="response">
+    <div class="help">
+      <img src="static/bot.png" alt="image" />
+      <p>How can I help you today?</p>
+    </div>
+
+    <div class="list">
+      <ul class="one">
+        <li class="birthday">
+          <h4>Help me pick</h4>
+          <p>a birthday gift for my mom</p>
+        </li>
+        <li class="tour">
+          <h4>Plan a tour</h4>
+          <p>for mountains</p>
+        </li>
+      </ul>
+      <ul class="two">
+        <li class="youtube">
+          <h4>Create a content</h4>
+          <p>for youtube blog</p>
+        </li>
+        <li class="code">
+          <h4>Show me a code snippet</h4>
+          <p>for website background color</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% block scripts %}
+<script>
+  // Display alert if user is logged in
+  $(document).ready(function () {
+    alert(
+      "Welcome, {{ session['user']['username'] }}! To Get Started Type : 'start'"
+    );
+  });
+</script>
+{% endblock %} {% endblock %}
