@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatHub</title>
-    <link rel="stylesheet" href="static/style.css">
-    <link rel="shortcut icon" href="static/favicon.ico">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
                 <div class="new-collection">
                     <div id="new">
                         <div class="logo">
-                            <span> <img src="static/bot.png" alt="logo"></span>
+                            <span> <img src="static/images/bot.png" alt="logo"></span>
                             <span>New chat</span>
                         </div>
                     </div>
@@ -74,15 +74,15 @@
                             <div class="buttons">
                                 <div class="image-upload">
                                     <label for="file-upload" class="custom-button">
-                                        <img id="image-preview" src="static/image.png" alt="">
+                                        <img id="image-preview" src="static/images/image.png" alt="">
                                     </label>
                                     <input type="file" id="file-upload" name="file">
                                     <button type="button" id="remove-image" style="display: none;">
-                                        <img src="static/close.png" alt="Remove">
+                                        <img src="static/images/close.png" alt="Remove">
                                     </button>
                                 </div>
                                 <button class="submit" type="submit" id="send-button">
-                                    <img src="static/send.png" alt="">
+                                    <img src="static/images/send.png" alt="">
                                 </button>       
                             </div>
                         </div>
@@ -96,13 +96,13 @@
         </div>
         
 
-    <script src="static/app.js"></script>
-    <script src="static/app2.js"></script>
-    <script src="static/messages.js"></script>
-    <script src="static/image.js"></script>
-    <script src="static/sidebar.js"></script>
-    <script src="static/collection.js"></script>
-    <script src="static/history.js"></script>
+    <!-- <script src="static/app.js"></script> -->
+    <script src="{{ url_for('static', filename='javascripts/app2.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/messages.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/image.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/collection.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/history.js') }}"></script>
 
 </body>
 </html>

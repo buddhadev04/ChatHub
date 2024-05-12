@@ -31,7 +31,7 @@ $(document).ready(function () {
   function appendMessage(role, message, callback) {
     let colorClass = role === "user" ? "user-message" : "assistant-message";
     let imageSrc =
-      role === "user" ? "static/profile-user.png" : "static/bot.png";
+      role === "user" ? "static/images/profile-user.png" : "static/images/bot.png";
     let imageAlt = role === "user" ? "User Image" : "Assistant Image";
 
     let messageElement;

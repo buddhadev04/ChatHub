@@ -12,14 +12,14 @@ $(document).ready(function() {
     });
 
     $('#remove-image').click(function() {
-        $('#image-preview').attr('src', 'static/image.png'); // Reset image source
+        $('#image-preview').attr('src', 'static/images/image.png'); // Reset image source
         $('#file-upload').val(''); // Clear file input
         $(this).hide(); // Hide the remove button
     });
 
     $('#chat-form').submit(function(event) {
         // Clear image preview and input on form submission
-        $('#image-preview').attr('src', 'static/image.png'); // Reset image source
+        $('#image-preview').attr('src', 'static/images/image.png'); // Reset image source
         $('#file-upload').val(''); // Clear file input
         $('#remove-image').hide(); // Hide the remove button
 

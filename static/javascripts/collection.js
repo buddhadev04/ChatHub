@@ -5,7 +5,7 @@ $(document).ready(function () {
     // Function to append messages to the chat interface
     function appendMessage(role, message, isCollectionMessage = false) {
         let colorClass = role === "user" ? "user-message" : "assistant-message";
-        let imageSrc = role === "user" ? "static/profile-user.png" : "static/bot.png";
+        let imageSrc = role === "user" ? "static/images/profile-user.png" : "static/images/bot.png";
         let imageAlt = role === "user" ? "User Image" : "Assistant Image";
 
         let messageElement;
