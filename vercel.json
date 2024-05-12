@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+        {
+           "src": "./inex.py",
+           "use": "@vercel/python",
+           "config": {"runtime": "python 3.11.3"}
+        }
+        
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ]
+}

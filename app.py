@@ -15,11 +15,14 @@ load_dotenv()
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-username = quote_plus("monosworld0")
-password = quote_plus("Mono@1234")
+username = os.environ.get('MONGODB_USERNAME')
+password = os.environ.get('MONGODB_PASSWORD')
+
+encoded_username = quote_plus(username)
+encoded_password = quote_plus(password)
 
 # MongoDB setup
-uri = f"mongodb+srv://{username}:{password}@cluster0.hsalqtk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = f"mongodb+srv://{encoded_username}:{encoded_password}@cluster0.hsalqtk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 # Send a ping to confirm a successful connection
@@ -334,7 +337,4 @@ def reset_password():
 
     return render_template("reset_password.html")
 
-    
-if __name__ == '__main__':
-    app.run(debug = True)
 
