@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
+from flask_cors import CORS
 import google.generativeai as genai
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -13,6 +14,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)  # This will enable CORS for all routes
 bcrypt = Bcrypt(app)
 
 username = os.environ.get('MONGODB_USERNAME')
