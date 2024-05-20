@@ -137,21 +137,6 @@ def sign_out():
     flash("Sign Out successfull")
     return redirect(url_for('sign_up'))
 
-# home route
-@app.route('/home')
-def home():
-    if 'user' in session:
-        username = session['user']['username']
-         # Get the name of the user's database
-        user_db_name = username.replace('.', '_').lower()  # Replace '.' with '_' in the email for MongoDB compatibility
-        # Connect to the user's database
-        user_db = client[user_db_name]
-        # Fetch the list of collections from the user's database
-        user_collection_names = user_db.list_collection_names()
-        return render_template('home.html', username=username, collection_names=user_collection_names)
-    else:
-        return redirect(url_for('sign_in'))
-
 # chat session
 def initialize_chat_session():
     return {
