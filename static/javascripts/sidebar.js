@@ -1,5 +1,7 @@
 function openNav() {
   document.getElementById("mySidebar").style.width = "270px";
+  document.getElementById("user").style.display = "flex";
+  // document.getElementById("user").style.position = "fixed"; // Show user div
   if(window.innerWidth >= 992){
     document.getElementById("main").style.marginLeft = "200px";
     document.querySelector("main").style.marginLeft = "270px";
@@ -14,7 +16,7 @@ function closeNav() {
   document.getElementById("mySidebar").style.width = "0";
   document.getElementById("main").style.marginLeft = "0";
   document.querySelector("main").style.marginLeft = "0";
-  document.querySelector(".list").classList.remove("make-it-column");
+  document.getElementById("user").style.display = "none"; // Hide user div
 
 }
 

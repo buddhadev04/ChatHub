@@ -1,26 +1,112 @@
-{% extends "base.html" %} {% block content %}
-<div class="chat-container">
-  <div id="collection-message">
-</div>
-  <div id="chat-messages">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Slab&family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/markdown-it@12.2.0/dist/markdown-it.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
 
-    
-    <!-- <div class="chat-message user-message">
-                <img src="static/profile-user.png" alt="User" class="user-image">
-                <div class="message-text">hello</div>
+</head>
+<body>
+    <body>
+        <div id="container">
+            <div id="mySidebar" class="sidebar">
+                <div class="new-collection">
+                    <div id="new">
+                        <div class="logo">
+                            <span> <img src="static/images/bot.png" alt="logo"></span>
+                            <span>New chat</span>
+                        </div>
+                    </div>
+                <span>
+                <a href="javascript:void(0)" class="closebtn"
+            onclick="closeNav()">
+            ×
+        </a>
+         </span>      
+           </div>      
+                <div class="history">
+                    <div class="past">
+                        <ul>
+                            {% for collection_name in collection_names %}
+                            <li><a href="#" class="collection-link{% if collection_name == current_collection_name %} active{% endif %}">{{ collection_name }}</a>
+                                <i class="fas fa-trash-alt delete-icon" data-collection="{{ collection_name }}"></i>
+                            </li></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div id="user">
+                    
+                    <div class="user-name">
+                        <i class="fa-regular fa-user"></i>
+                        <p>{{username}}</p>
+                    </div>   
+                    <div class="sign-out">
+                        <a href="/sign-out" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-right-from-bracket"></i></a>
+                    </div>  
+                </div>
             </div>
-            <div class="chat-message assistant-message">
-                <img src="static/bot.png" alt="User" class="user-image">
-                <div class="message-text">hello from ChatHub</div>
-            </div>     -->
-    <div class="vanish">
-      <div class="texting">
-        <img src="static/images/bot.png" alt="" />
-        <p>ChatHub</p>
-        
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock %}
+            <main>
+                    <nav>
+                        <h2>ChatHub</h2>
+                    </nav>
+                    <div id="main">
+        <button class="openbtn" onclick="openNav()"><img src="static/images/menu.png" alt="">
+        </button>
+        </div>
+                    
+        <div class="chat-container">
+            <div id="collection-message">
+          </div>
+            <div id="chat-messages">
+                <div class="temp_div">
+                  <img src="static/images/bot.png" alt="" />
+                  <p>Ready to serve You</p>
+              </div>
+            </div>
+          </div>
+                    <form id="chat-form" method="POST" enctype="multipart/form-data">
+                        <div id="input">
+                            <div class="input-field">
+                                <input type="text" id="chat-input" placeholder="Type your message here...">
+                            <div class="buttons">
+                                <div class="image-upload">
+                                    <label for="file-upload" class="custom-button">
+                                        <img id="image-preview" src="static/images/image.png" alt="">
+                                    </label>
+                                    <input type="file" id="file-upload" name="file">
+                                    <button type="button" id="remove-image" style="display: none;">
+                                        <img src="static/images/close.png" alt="Remove">
+                                    </button>
+                                </div>
+                                <button class="submit" type="submit" id="send-button">
+                                    <img src="static/images/paper-plane.png" alt="">
+                                </button>       
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                        <div class="note">
+                            <p>ChatHub can make mistakes. Consider checking important information.</p>
+                        </div>
+                </div>
+            </main>
+        </div>
+    <script src="{{ url_for('static', filename='javascripts/messages.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/image.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/collection.js') }}"></script>
+    <script src="{{ url_for('static', filename='javascripts/chat_mode.js') }}"></script>
+
+</body>
+</html>

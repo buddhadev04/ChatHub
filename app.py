@@ -123,7 +123,7 @@ def sign_in():
                 print("Default collection set:", new_collection_name)
                 
             flash("sign_in successful!")
-            return redirect(url_for('home'))
+            return redirect(url_for('conversation'))
         else:
             flash("sign_in failed. Check your email and password.")
     return render_template('index.html')
