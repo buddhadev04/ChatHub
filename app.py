@@ -7,7 +7,7 @@ from urllib.parse import quote_plus
 from flask_bcrypt import Bcrypt
 from PIL import Image
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
 
@@ -39,6 +39,8 @@ users_collection = db["users"]  # Collection for storing user information
 
 # Secret key for session security
 app.config['SECRET_KEY'] = 'buddhadev_das'
+app.config['SESSION_PERMANENT'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)  # Session will last 7 days
 
 # Store chat sessions in memory using a dictionary
 chat_sessions = {}
@@ -96,6 +98,7 @@ def sign_in():
         # Check if the user exists and the password is correct
         user = users_collection.find_one({"email": email})
         if user and bcrypt.check_password_hash(user['password'], password):
+            session.permanent = True  # Make the session permanent
             session['user'] = {'username': user['username'], 'email': user['email']}
             
             # Create a new database for the user based on their username if not exists
@@ -134,6 +137,7 @@ def sign_in():
 def sign_out():
     session.pop('user', None)
     session.pop('default_collection_name', None)
+    session.permanent = False  # Set session to non-permanent on logout
     flash("Sign Out successfull")
     return redirect(url_for('sign_up'))
 
