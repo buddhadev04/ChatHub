@@ -106,7 +106,9 @@ def sign_in():
             if user_db_name not in client.list_database_names():
                 user_db = client[user_db_name]
                 # Create a new collection with a name based on the current timestamp
-                new_collection_name = f"File_{datetime.now().strftime('%d-%m-%y_%H-%M')}"
+                current_time = datetime.now()
+                formatted_time = current_time.strftime('%y-%m-%d_%H-%M')
+                new_collection_name = f"File_{formatted_time}"
                 user_db.create_collection(new_collection_name)
                 # Set the default collection name to the newly created collection
                 session["default_collection_name"] = new_collection_name
@@ -120,7 +122,9 @@ def sign_in():
             if 'default_collection_name' not in session:
                 # Set the default collection name to a new collection if not exists
                 user_db = client[user_db_name]
-                new_collection_name = f"File_{datetime.now().strftime('%d-%m-%y_%H-%M')}"
+                current_time = datetime.now()
+                formatted_time = current_time.strftime('%y-%m-%d_%H-%M')
+                new_collection_name = f"File_{formatted_time}"
                 user_db.create_collection(new_collection_name)
                 session["default_collection_name"] = new_collection_name
                 print("Default collection set:", new_collection_name)
@@ -267,8 +271,10 @@ def create_collection():
         username = session['user']['username']
         user_db_name = username.replace('.', '_').lower()
         user_db = client[user_db_name]
-        user_collection_names = user_db.list_collection_names()
-        new_collection_name = f"File_{datetime.now().strftime('%d-%m-%y_%H-%M')}"
+        # Get the current UTC time
+        current_time = datetime.now()
+        formatted_time = current_time.strftime('%y-%m-%d_%H-%M')
+        new_collection_name = f"File_{formatted_time}"
         print(new_collection_name)
         # Check if the collection already exists
         if new_collection_name in user_db.list_collection_names():
