@@ -1,6 +1,9 @@
 $(document).ready(function () {
     let isPlaying = false; // Variable to track if speech synthesis is playing
     let pausedAt = 0; // Variable to track the position where speech synthesis was paused
+    // Initialize a new SpeechSynthesisUtterance object
+    let utterance = new SpeechSynthesisUtterance();
+    utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google UK English Female');
 
     // Function to append messages to the chat interface
     function appendMessage(role, message, isCollectionMessage = false) {
@@ -92,9 +95,6 @@ $(document).ready(function () {
         });
     });
 
-    // Initialize a new SpeechSynthesisUtterance object
-    let utterance = new SpeechSynthesisUtterance();
-    utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === 'Google UK English Female');
 
     // Function to toggle speech synthesis
 function toggleRead(message) {
@@ -131,66 +131,30 @@ function toggleRead(message) {
 });
 });
 
-// timer for creating new collection
+
+
 $(document).ready(function () {
-    let timerRunning = false; // Variable to track if the timer is running
-
-    $('#new').click(function() {
-        if (!timerRunning) { // Check if the timer is not already running
-            // Calculate remaining seconds in the current minute
-            let currentTime = new Date();
-            let secondsElapsed = currentTime.getSeconds();
-            let remainingSeconds = 60 - secondsElapsed;
-
-            // Start countdown timer only if remainingSeconds is greater than 0
-            if (remainingSeconds > 0) {
-                startCountdownTimer(remainingSeconds);
-            }
-
-            // Make AJAX request after calculating remaining seconds
-            $.ajax({
-                url: '/create_collection',
-                type: 'POST',
-                success: function(data) {
-                    if (data.collection_name) {
-                        displayMessageWithTimer(`New collection created: ${data.collection_name}`, remainingSeconds); // Display message with the calculated remaining time
-                    } else if (data.error) {
-                        displayMessageWithTimer(data.error, remainingSeconds); // Display error message with the calculated remaining time
-                    } else {
-                        displayMessageWithTimer('Wait for the 60 seconds', remainingSeconds); // Display generic error message with the calculated remaining time
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error creating collection:', error);
-                    displayMessageWithTimer('An error occurred while creating the collection. Please try again later.', remainingSeconds); // Display generic error message with the calculated remaining time
+    // Function to remove the default collection
+    function CreateCollection() {
+        $.ajax({
+            url: '/create_new_collection',
+            type: 'POST',
+            success: function (data) {
+                if (data.success) {
+                    console.log('Default collection removed successfully.');
+                } else {
+                    console.error('Error removing default collection:', data.error);
                 }
-            });
-        }
-    });
-
-    function startCountdownTimer(seconds) {
-        timerRunning = true; // Set the timerRunning flag to true
-        let interval = setInterval(function() {
-            if (seconds > 0) {
-                $('#collection-message').text(`Please wait for ${seconds} seconds before creating a new collection.`); // Update timer message
-                seconds--;
-            } else {
-                clearInterval(interval); // Clear the interval when the timer reaches 0
-                $('#collection-message').text(""); // Clear the message after the timer expires
-                timerRunning = false; // Reset the timerRunning flag
             }
-        }, 1000); // Update timer every second
+        });
     }
 
-    function displayMessageWithTimer(message, seconds) {
-        $('#collection-message').text(message); // Display the message
-        // Start countdown timer only if seconds is greater than 0
-        if (seconds > 0) {
-            startCountdownTimer(seconds);
-        }
-    }
+    // Click event handler for the #new button
+    $('#new').click(function () {
+        // Remove the default collection
+        CreateCollection();
+    });
 });
-
 
  // Add event listener to delete icon
  $('.delete-icon').click(function() {
@@ -217,7 +181,5 @@ function deleteCollection(collectionName) {
         }
     });
 }
-
-
 
 

@@ -1,132 +1,150 @@
-
+/* Reset and box-sizing */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* General styles */
+body {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    background-color: #ece7e7;
+}
 
-#container{
+/* Container */
+#container {
     height: 100vh;
     display: flex;
 }
 
-.new-collection{
+/* Header */
+.new-collection {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     padding: 10px;
     position: relative;
-    
 }
 
-#new:hover{
+#new:hover {
     background-color: #574b4b;
     cursor: pointer;
     border-radius: 10px;
 }
-#new{
+
+#new {
     display: flex;
     width: 60%;
     margin-left: 20px;
     justify-content: space-between;
     align-items: center;
-    font-family: "Poppins", serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    
+    font-family: "Poppins", sans-serif;
 }
 
-.history{
+/* History */
+.history {
     height: 80%;
     padding: 5px;
     overflow-y: auto;
 }
-.past{
+
+.past {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
-.past li{
+
+.past li {
     height: 50px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 90%;
+    width: 95%;
     border: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
     padding: 10px;
 }
-.past li:hover{
+
+.past li:hover {
     background-color: #574b4b;
     border-radius: 5px;
 }
-.past li a{
+
+.past li a {
     font-size: 20px;
 }
+
 .delete-icon {
-    font-size: 20px; /* Set initial font size */
-    transition: font-size 0.3s; /* Add transition effect */
+    font-size: 20px;
+    transition: font-size 0.3s;
 }
 
 .delete-icon:hover {
-    font-size: 24px; /* Increase font size on hover */
+    font-size: 24px;
     cursor: pointer;
 }
 
-/* Style for the active collection name */
-.collection-link.active {
+.collection-link {
+    width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-weight: bold;
-    color: blue;
 }
+
+.collection-link.active {
+    color: rgb(16, 235, 16);
+}
+
+/* Logo */
 .logo {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.logo img{
+
+.logo img {
     background-color: white;
     border-radius: 50%;
     width: 40px;
 }
-.icon img{
+
+.icon img {
     width: 20px;
 }
 
-main{
-    background-color: #d9d9d9;
+/* Main content */
+main {
+    padding: 20px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     transition: 0.5s;
-    padding: 20px;
-    
 }
 
-nav{
+nav {
     width: 100%;
     line-height: 1;
-    /* position: sticky; */
-    font-family: "Poppins", serif;
-    font-optical-sizing: auto;
+    font-family: "Poppins", sans-serif;
     font-weight: 600;
-    font-style: normal;  
 }
-h2{
+
+h2 {
     padding: 10px;
     margin: 0 10px;
     display: inline-block;
-}
-h2:hover{
     cursor: pointer;
 }
-#user{
+
+/* User section */
+#user {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -134,17 +152,14 @@ h2:hover{
     width: 14rem;
     padding: 5px;
 }
-.user-name{
+
+.user-name {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-family: "Poppins", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    
 }
 
-.user-name p{
+.user-name p {
     margin-left: 10px;
     font-size: 20px;
     font-weight: 600;
@@ -152,16 +167,17 @@ h2:hover{
     overflow: hidden;
     text-overflow: ellipsis;
 }
-#user i{
+
+#user i {
     font-size: 22px;
 }
 
-
-.chat-box-mode-on{
+/* Chat box */
+.chat-box-mode-on {
     display: none;
 }
 
-.chat-messages img{
+.chat-messages img {
     height: 40px;
     width: 40px;
 }
@@ -173,48 +189,37 @@ h2:hover{
     overflow: auto;
     border-radius: 10px;
     position: relative;
-    /* background-color: yellow; */
 }
-/* Styles for chat messages */
+
 .chat-message {
     margin: 10px 0;
     padding: 10px;
     border-radius: 8px;
-    word-wrap: break-word; /* Ensure long messages wrap within container */
+    word-wrap: break-word;
     display: flex;
     gap: 1rem;
-    font-family: "Poppins", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    width: -webkit-fill-available;
-    
 }
-.temp_div{
+
+.temp_div {
     position: absolute;
-    top: 40%; 
-    left: 50%; /* Move the element right by 50% of its parent's width */
-    transform: translate(-50%, -50%); /* Center the element perfectly */
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
-    font-family: "Poppins", serif;
     font-weight: 600;
-    font-style: normal;
     font-size: 1.5rem;
 }
-.temp_div img{
+
+.temp_div img {
     height: 5rem;
     width: auto;
-    
 }
 
-/* Styles for assistant messages */
-
-.chat-message img{
+.chat-message img {
     height: 30px;
 }
 
-/* style for input field  */
-
-.input-field{
+.input-field {
     width: 50vw;
     height: 53px;
     border-radius: 10px;
@@ -222,24 +227,23 @@ h2:hover{
     display: flex;
     align-items: center;
     position: sticky;
-    /* z-index: 1000; */
-
 }
-/* Styles for the chat input field */
+
 #chat-input {
     width: 82%;
     padding: 8px;
-    border: 1px solid rgb(136, 128, 128);
+    border: none;
     border-radius: 10px;
     font-size: 15px;
     background: none;
-    border: none;
     outline: none;
 }
+
 #chat-input::placeholder {
     font-size: 17px;
 }
-.buttons{
+
+.buttons {
     display: flex;
     align-items: center;
     position: absolute;
@@ -247,16 +251,20 @@ h2:hover{
     margin-left: 10px;
     gap: 15px;
 }
-.image-upload{
+
+.image-upload {
     position: relative;
 }
+
 .custom-button img {
     cursor: pointer;
     height: 35px;
 }
+
 #file-upload {
     display: none;
 }
+
 #remove-image {
     background: none;
     border: none;
@@ -266,73 +274,64 @@ h2:hover{
     right: 5px;
     display: none;
 }
-#remove-image img{
+
+#remove-image img {
     height: 15px;
 }
 
-.buttons img{ 
-    object-fit: contain; 
+.buttons img {
+    object-fit: contain;
 }
 
-/* Styles for the send button */
 #send-button {
     border: none;
     background: none;
     border-radius: 5px;
     cursor: pointer;
 }
-#send-button img{
+
+#send-button img {
     height: 40px;
     width: 40px;
 }
 
-/* Styles for the note */
 .note {
-    font-family: "DM Sans", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 200;
-    font-style: normal;
     margin-top: 10px;
     text-align: center;
 }
-/* Position the speaker icon on the right side */
+
 .speaker-icon {
     float: right;
-    margin-left: 10px; /* Adjust as needed */
+    margin-left: 10px;
     cursor: pointer;
 }
+
 .icon-container {
-    width: 24px; /* Adjust width as needed */
+    width: 24px;
     display: inline-block;
-    vertical-align: middle; /* Align icon vertically with text */
-}
-#collection-message{
-    font-size: 20px;
-    text-align: center;  
+    vertical-align: middle;
 }
 
- /* The sidebar menu */
- .sidebar {
-    background-color: #353535;
+#collection-message {
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #1b1818;
     color: white;
     height: 100%;
     width: 0;
     position: fixed;
-    /* Fixed place */
-    z-index: 1;
-    /* Stay on top */
     top: 0;
     left: 0;
-    background-color: black;
-    /* Disable horizontal scroll */
     overflow-x: hidden;
-    /* Place content 60px from the top */
     padding-top: 10px;
-    /* Transition effect to slide
-        in the sidebar */
     transition: 0.5s;
+    z-index: 1000;
 }
-/* The sidebar links */
+
 .sidebar a {
     padding-right: 8px;
     text-decoration: none;
@@ -341,44 +340,37 @@ h2:hover{
     display: block;
     transition: 0.3s;
 }
-/* Mouse over the navigation
-links, to change their color */
+
 .sidebar a:hover {
-    color: green;
+    color    : green;
 }
-/* Position and style the close
-button at top right corner */
+
 .sidebar .closebtn {
     position: absolute;
     top: 0;
     right: 10px;
     font-size: 36px;
 }
-/* The button used to open the sidebar */
+
 .openbtn {
     font-weight: bolder;
     cursor: pointer;
     border: none;
     background: none;
-    /* Adjust positioning to fix it to the left side */
     position: fixed;
-    top: 150px; /* Adjust as needed */
+    top: 150px;
     left: 10px;
-    /* background-color: red; */
 }
-.openbtn img{
+
+.openbtn img {
     height: 30px;
 }
-/* Style page content - pushes the
-page content to the right when the
-sidebar is opened */
+
 #main {
-    /* If you want a transition effect */
     transition: margin-left 0.5s;
 }
 
-/* responsive */
-
+/* Responsive styles */
 @media screen and (max-height: 450px) {
     .sidebar {
         padding-top: 15px;
@@ -388,33 +380,54 @@ sidebar is opened */
     }
 }
 
-@media screen and (min-width: 1024px){
-    .response{
-        margin-top: 5rem;
-    }
-}
-
-@media screen and (max-width: 1023px) and (min-width: 768px){
+@media screen and (min-width: 768px) and (max-width: 1023px) {
     nav {
         text-align: center;
     }
-    .openbtn{
+    .openbtn {
         top: 60px;
         left: 45px;
     }
-    .chat-container{
-        height: 80%;
+    .chat-container {
         width: 90vw;
+        height: 80%;
     }
-    .input-field{
+    .input-field {
         width: 70vw;
+    }
+    #chat-input {
+        font-size: 14px;
+        width: 70%;
+    }
+    .chat-message {
+        font-size: 14px;
+    }
+    .custom-button img {
+        height: 30px;
+    }
+    .input-field {
+        height: 47px;
+    }
+    #send-button img {
+        height: 30px;
+        width: 30px;
     }
 }
 
 @media screen and (max-width: 767px) {
-    
-    nav{
-        text-align: center;
+    .new-collection {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #new {
+        width: 70%;
+        margin: 0;
+        justify-content: space-between;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .openbtn {
         top: 30px;
@@ -424,55 +437,42 @@ sidebar is opened */
         width: 90vw;
         height: 80%;
     }
-
     .input-field {
         width: 70vw;
     }
-
     #chat-input {
         font-size: 14px;
-        width: 68%;
+        width: 70%;
     }
-
     .chat-message {
         font-size: 14px;
     }
+    .custom-button img {
+        height: 30px;
+    }
+    .input-field {
+        height: 47px;
+    }
+    #send-button img {
+        height: 30px;
+        width: 30px;
+    }
 }
 
-
 @media screen and (max-width: 480px) {
-    .new-collection {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    #new {
-        width: 100%;
-        margin: 0;
-        justify-content: space-between;
-    }
-    nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        
-    }
-
-
     h2 {
         width: auto;
         text-align: center;
     }
-    .temp_div{
+    .temp_div {
         font-size: 1rem;
     }
-    .temp_div img{
+    .temp_div img {
         height: 4rem;
     }
     .input-field {
         width: 80vw;
     }
-
     .buttons {
         right: 8px;
         gap: 5px;
@@ -481,15 +481,17 @@ sidebar is opened */
         align-self: flex-start;
     }
 }
-@media screen and (max-width: 360px){
-    .chat-container{
+
+@media screen and (max-width: 360px) {
+    .chat-container {
         height: 78%;
         width: 87vw;
     }
 }
 
-@media screen and (max-height: 640px){
-    .openbtn{
+@media screen and (max-height: 640px) {
+    .openbtn {
         top: 27px;
     }
 }
+

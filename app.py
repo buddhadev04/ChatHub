@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 from PIL import Image
 from io import BytesIO
 from datetime import datetime, timedelta
+import uuid
 from dotenv import load_dotenv
 import os
 
@@ -89,6 +90,7 @@ def sign_up():
     return render_template('index.html')
 
 # sign in route
+# sign in route
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_in():
     if request.method == 'POST':
@@ -101,39 +103,12 @@ def sign_in():
             session.permanent = True  # Make the session permanent
             session['user'] = {'username': user['username'], 'email': user['email']}
             
-            # Create a new database for the user based on their username if not exists
-            user_db_name = user['username'].replace('.', '_').lower()
-            if user_db_name not in client.list_database_names():
-                user_db = client[user_db_name]
-                # Create a new collection with a name based on the current timestamp
-                current_time = datetime.now()
-                formatted_time = current_time.strftime('%y-%m-%d_%H-%M')
-                new_collection_name = f"File_{formatted_time}"
-                user_db.create_collection(new_collection_name)
-                # Set the default collection name to the newly created collection
-                session["default_collection_name"] = new_collection_name
-                
-                print("User database created:", user_db_name)
-                print("Default collection set:", new_collection_name)
-            else:
-                print("User database already exists.")
-                
-            # Check if the default collection name exists in the session
-            if 'default_collection_name' not in session:
-                # Set the default collection name to a new collection if not exists
-                user_db = client[user_db_name]
-                current_time = datetime.now()
-                formatted_time = current_time.strftime('%y-%m-%d_%H-%M')
-                new_collection_name = f"File_{formatted_time}"
-                user_db.create_collection(new_collection_name)
-                session["default_collection_name"] = new_collection_name
-                print("Default collection set:", new_collection_name)
-                
             flash("sign_in successful!")
             return redirect(url_for('conversation'))
         else:
             flash("sign_in failed. Check your email and password.")
     return render_template('index.html')
+
 
 
 # Logout route
@@ -185,53 +160,6 @@ def modified(text):
 def changeName(text):
     return text.replace("chathub", "gemini")
 
-# route to handle responses
-@app.route('/send_message', methods=["POST"])
-def send_message():
-    chat_session_id = session.get("chat_session_id")
-    if not chat_session_id or chat_session_id not in chat_sessions:
-        return "Chat session not found", 404
-
-    chat_session = chat_sessions[chat_session_id]
-    user_input = request.form["prompt"]
-    assistant = ""
-    collection_name = session.get("default_collection_name")
-    print(collection_name)
-    prompt = changeName(user_input)
-    if prompt.lower() != "start":
-        # Check if an image file is uploaded
-        image_file = request.files.get("file")
-        if image_file:
-            img_bytes = image_file.read()
-            img = Image.open(BytesIO(img_bytes))
-
-            if prompt != "":
-                response = vision_model.generate_content([changeName(prompt), img])
-            else:
-                response = vision_model.generate_content(img)
-            
-            assistant = response.text
-            # Save the response into the chat session
-            chat_session["chat_history"].append(("assistant", response.text))
-            # Save the message to the appropriate collection
-            save_message_to_collection(collection_name, prompt, assistant)
-            # Return the response text for updating the UI
-            return jsonify({"response": response.text})
-
-        else:
-            chat_session["chat_history"].append(("user", prompt))
-            response = chat_session["chat"].send_message(prompt)
-            assistant_response = modified(response.text)
-            print(assistant_response)
-            chat_session["chat_history"].append(("assistant", assistant_response))
-            # Save the message to the appropriate collection
-            save_message_to_collection(collection_name, prompt, assistant_response)
-        
-        # Return the response text for updating the UI
-        return jsonify({"response": assistant_response})
-    else:
-        return jsonify({"response": ""})
-
 # Function to save message to a collection
 def save_message_to_collection(collection_name, user_message, assistant_message):
     username = session['user']['username']
@@ -241,11 +169,93 @@ def save_message_to_collection(collection_name, user_message, assistant_message)
     document_to_add = {"user": user_message, "assistant": assistant_message}
     message_collection.insert_one(document_to_add)
 
-# rotue to get data from collection
+# Route to handle responses
+@app.route('/send_message', methods=["POST"])
+def send_message():
+    chat_session_id = session.get("chat_session_id")
+    if not chat_session_id or chat_session_id not in chat_sessions:
+        return "Chat session not found", 404
+
+    chat_session = chat_sessions[chat_session_id]
+    assistant = ""
+    user_input = request.form.get("prompt", "")
+    prompt = changeName(user_input)
+    
+    collection_name = session.get("default_collection_name")
+
+    # If the default collection is not set, create a new one
+    if not collection_name:
+        username = session['user']['username']
+        user_db_name = username.replace('.', '_').lower()
+        user_db = client[user_db_name]
+        unique_id = str(uuid.uuid4())[:4]  # Extract first 4 characters of UUID
+        new_collection_name = f"{prompt.replace(' ', '_')}_{unique_id}"
+        user_db.create_collection(new_collection_name)
+        session["default_collection_name"] = new_collection_name
+        collection_name = new_collection_name
+
+    # Check if an image file is uploaded
+    image_file = request.files.get("file")
+    if image_file:
+        img_bytes = image_file.read()
+        img = Image.open(BytesIO(img_bytes))
+
+        if prompt:
+            response = vision_model.generate_content([changeName(prompt), img])
+        else:
+            response = vision_model.generate_content(img)
+
+        assistant_response = modified(response.text)
+        # Save the response into the chat session
+        chat_session["chat_history"].append(("assistant", response.text))
+        # Save the message to the appropriate collection
+        save_message_to_collection(collection_name, prompt, assistant)
+        # Return the response text for updating the UI and the new collection name if created
+        return jsonify({"response": assistant_response})
+    else:
+        chat_session["chat_history"].append(("user", prompt))
+        response = chat_session["chat"].send_message(prompt)
+        assistant_response = modified(response.text)
+        print(assistant_response)
+        chat_session["chat_history"].append(("assistant", assistant_response))
+        # Save the message to the appropriate collection
+        save_message_to_collection(collection_name, prompt, assistant_response)
+
+    # Return the response text for updating the UI and the new collection name if created
+    return jsonify({"response": assistant_response})
+
+
+@app.route('/create_new_collection', methods=['POST'])
+def create_new_collection():
+    if 'default_collection_name' in session:
+        session.pop('default_collection_name')
+        return jsonify({"success": True})
+    else:
+        return jsonify({"error": "No default collection to remove"}), 400
+
+
+
+@app.route('/get_collections', methods=["GET"])
+def get_collections():
+    try:
+        username = session['user']['username']
+        user_db_name = username.replace('.', '_').lower()
+        user_db = client[user_db_name]
+        collection_names = user_db.list_collection_names()
+        
+        # Filter collections if necessary
+        # collection_names = [name for name in collection_names if some_condition(name)]
+        
+        return jsonify({"collections": collection_names})
+    except Exception as e:
+        return jsonify({"error": "An error occurred while fetching collections"}), 500
+
+
+
+# Route to get data from collection
 @app.route('/collection/<collection_name>')
 def get_collection_data(collection_name):
     if 'user' in session:
-        # collection_name = collection_name.replace('/', '_')  # Replace underscores with slashes
         print(collection_name)
         session["default_collection_name"] = collection_name
         username = session['user']['username']
@@ -263,29 +273,10 @@ def get_collection_data(collection_name):
         return jsonify(documents_list)
     else:
         return "User not logged in", 401
-    
-# route to create new collection
-@app.route('/create_collection', methods=['POST'])
-def create_collection():
-    if 'user' in session:
-        username = session['user']['username']
-        user_db_name = username.replace('.', '_').lower()
-        user_db = client[user_db_name]
-        # Get the current UTC time
-        current_time = datetime.now()
-        formatted_time = current_time.strftime('%y-%m-%d_%H-%M')
-        new_collection_name = f"File_{formatted_time}"
-        print(new_collection_name)
-        # Check if the collection already exists
-        if new_collection_name in user_db.list_collection_names():
-        # Collection already exists, return an error message
-            return jsonify({"error": "A collection with the same name already exists. Please wait for one minute before creating a new collection."}), 400
-        user_db.create_collection(new_collection_name)  # Create an empty collection
-        # Set the default collection name to the newly created collection
-        session["default_collection_name"] = new_collection_name
-        return jsonify({"collection_name": new_collection_name}), 200
-    else:
-        return "User not logged in", 401
+
+
+
+
     
 # route to delete a collection
 @app.route('/delete_collection', methods=['POST'])
@@ -301,6 +292,8 @@ def delete_collection():
         print(collection_name)
     try:
         # Delete the collection
+        session.pop('default_collection_name', None)
+        print("deleted ", user_db[collection_name])
         user_db[collection_name].drop()
         return jsonify({'success': True})
     except Exception as e:
