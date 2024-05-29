@@ -393,7 +393,7 @@ h2 {
     }
     .chat-container {
         width: 100%;
-        height: -webkit-fill-available;
+        height: calc(100vh - 100px);
     }
     .input-field {
         height: 47px;
@@ -426,9 +426,7 @@ h2 {
         justify-content: space-between;
     }
     nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        text-align: center
     }
     nav h2 {
         margin-left: 0;
@@ -439,7 +437,7 @@ h2 {
     }
     .chat-container {
         width: 100%;
-        height: -webkit-fill-available;
+        height: calc(100vh - 100px);
     }
     .input-field {
         width: 90vw;
