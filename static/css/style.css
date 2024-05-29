@@ -120,18 +120,17 @@ body {
 
 /* Main content */
 main {
-    padding: 20px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     transition: 0.5s;
 }
 
 nav {
     width: 100%;
-    line-height: 1;
+    /* line-height: 1; */
     font-family: "Poppins", sans-serif;
     font-weight: 600;
 }
@@ -192,12 +191,12 @@ h2 {
 }
 
 .chat-message {
-    margin: 10px 0;
-    padding: 10px;
+    padding: 10px 0;
     border-radius: 8px;
     word-wrap: break-word;
     display: flex;
     gap: 1rem;
+    font-size: 15px;
 }
 
 .temp_div {
@@ -297,7 +296,9 @@ h2 {
 
 .note {
     margin-top: 10px;
+    margin-bottom: 5px;
     text-align: center;
+    font-weight: 300;
 }
 
 .speaker-icon {
@@ -385,15 +386,16 @@ h2 {
         text-align: center;
     }
     .openbtn {
-        top: 60px;
-        left: 45px;
+        top: 10px;
+        left: 35px;
     }
     .chat-container {
-        width: 90vw;
-        height: 80%;
+        width: 95%;
+        height: 100%;
     }
     .input-field {
-        width: 70vw;
+        height: 47px;
+        width: 80vw;
     }
     #chat-input {
         font-size: 14px;
@@ -404,9 +406,6 @@ h2 {
     }
     .custom-button img {
         height: 30px;
-    }
-    .input-field {
-        height: 47px;
     }
     #send-button img {
         height: 30px;
@@ -430,22 +429,22 @@ h2 {
         align-items: center;
     }
     .openbtn {
-        top: 30px;
-        left: 30px;
+        top: 10px;
+        left: 20px;
     }
     .chat-container {
-        width: 90vw;
-        height: 80%;
+        width: 100%;
+        height: 100%;
     }
     .input-field {
-        width: 70vw;
+        width: 90vw;
     }
     #chat-input {
         font-size: 14px;
         width: 70%;
     }
     .chat-message {
-        font-size: 14px;
+        font-size: 15px;
     }
     .custom-button img {
         height: 30px;
@@ -470,9 +469,7 @@ h2 {
     .temp_div img {
         height: 4rem;
     }
-    .input-field {
-        width: 80vw;
-    }
+    
     .buttons {
         right: 8px;
         gap: 5px;
@@ -482,16 +479,7 @@ h2 {
     }
 }
 
-@media screen and (max-width: 360px) {
-    .chat-container {
-        height: 78%;
-        width: 87vw;
-    }
-}
 
-@media screen and (max-height: 640px) {
-    .openbtn {
-        top: 27px;
-    }
-}
+
+
 

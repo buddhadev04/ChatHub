@@ -201,7 +201,7 @@ def send_message():
         img = Image.open(BytesIO(img_bytes))
 
         if prompt:
-            response = vision_model.generate_content([changeName(prompt), img])
+            response = vision_model.generate_content([prompt, img])
         else:
             response = vision_model.generate_content(img)
 
