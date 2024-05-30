@@ -70,30 +70,35 @@ $(document).ready(function () {
     }
 
     // Click event handler for collection names
-    $('a.collection-link').click(function(e) {
-        e.preventDefault();
-        var collectionName = $(this).text(); // Get the clicked collection name
-        console.log(collectionName)
+$('a.collection-link').click(function(e) {
+    e.preventDefault();
+    var collectionName = $(this).text(); // Get the clicked collection name
+    console.log(collectionName);
 
-        // Fetch collection content and display it
-        $.ajax({
-            url: '/collection/' + collectionName,
-            type: 'GET',
-            success: function(data) {
-                $('#chat-messages').empty(); // Clear previous content
-                data.forEach(function(document) {
-                    // Append user and assistant fields to the chat interface
-                    appendMessage("user", document.user);
-                    const md = new markdownit();
-                    let content = md.render(document.assistant)
-                    appendMessage("assistant", content, true); // Indicate that it's a collection message
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching collection:', error);
-            }
-        });
+    // Add 'active' class to the clicked <li> and remove it from others
+    $('a.collection-link').removeClass('active'); // Remove 'active' class from all links
+    $(this).addClass('active'); // Add 'active' class to the clicked link
+
+    // Fetch collection content and display it
+    $.ajax({
+        url: '/collection/' + collectionName,
+        type: 'GET',
+        success: function(data) {
+            $('#chat-messages').empty(); // Clear previous content
+            data.forEach(function(document) {
+                // Append user and assistant fields to the chat interface
+                appendMessage("user", document.user);
+                const md = new markdownit();
+                let content = md.render(document.assistant);
+                appendMessage("assistant", content, true); // Indicate that it's a collection message
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching collection:', error);
+        }
     });
+});
+
 
 
     // Function to toggle speech synthesis
@@ -132,29 +137,50 @@ function toggleRead(message) {
 });
 
 
-
 $(document).ready(function () {
-    // Function to remove the default collection
-    function CreateCollection() {
+    // Function to create a temporary list item with the name "Creating..."
+    function createTemporaryListItem() {
+        let temporaryLi = $('<li class="temp-li">Creating...</li>'); // Add the class "temp-li"
+        $('.history ul').prepend(temporaryLi); // Prepend the temporary list item
+    }
+
+    // Function to update the list item with the provided collection name or remove the temporary item if the creation fails
+    function updateListItem(collectionName) {
+        let tempLi = $('.history ul li.temp-li');
+        if (collectionName !== null) {
+            tempLi.text(collectionName); // Update text of the list item with class "temp-li"
+            tempLi.removeClass('temp-li'); // Remove the temporary class after updating
+        }
+    }
+
+    // Click event handler for the #new button
+    $('#new').click(function () {
+        createTemporaryListItem(); // Create temporary list item with "Creating..." text
+
+        // Call the endpoint to create a new collection
         $.ajax({
             url: '/create_new_collection',
             type: 'POST',
             success: function (data) {
                 if (data.success) {
                     console.log('Default collection removed successfully.');
+                    // Update the temporary list item with the created collection name
+                    updateListItem(data.collectionName); // Assuming the server returns the created collection name
                 } else {
                     console.error('Error removing default collection:', data.error);
+                    // Remove the temporary list item if creation fails
+                    updateListItem(null);
                 }
+            },
+            error: function () {
+                console.error('Error creating new collection.');
+                // Remove the temporary list item if creation fails
+                updateListItem(null);
             }
         });
-    }
-
-    // Click event handler for the #new button
-    $('#new').click(function () {
-        // Remove the default collection
-        CreateCollection();
     });
 });
+
 
  // Add event listener to delete icon
  $('.delete-icon').click(function() {
@@ -181,5 +207,4 @@ function deleteCollection(collectionName) {
         }
     });
 }
-
 

@@ -10,7 +10,6 @@ reload.addEventListener("click", () => {
 function chatMode(){
     if (prompt.value){
         temp_div.style.display = 'none';
-        console.log("working")
     }
 }
 
