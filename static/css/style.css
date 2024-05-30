@@ -436,6 +436,7 @@ h2 {
     }
     .chat-container {
         width: 100%;
+        height: 70%;
     }
     .input-field {
         width: 90vw;
