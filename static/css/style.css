@@ -9,15 +9,15 @@
 body {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
-    height: 100vh;
-    overflow: hidden;
     background-color: #ece7e7;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Container */
 #container {
     height: 100vh;
     display: flex;
+    overflow: visible;
 }
 
 /* Header */
@@ -392,7 +392,7 @@ h2 {
         left: 35px;
     }
     .chat-container {
-        width: 100%;
+        width: 100vw;
         height: calc(100vh - 100px);
     }
     .input-field {
@@ -436,7 +436,7 @@ h2 {
         left: 20px;
     }
     .chat-container {
-        width: 100%;
+        width: 100vw;
         height: 70%;
     }
     .input-field {
@@ -444,7 +444,7 @@ h2 {
     }
     #chat-input {
         font-size: 14px;
-        width: 70%;
+        width: 75%;
     }
     .chat-message {
         font-size: 15px;
@@ -478,7 +478,7 @@ h2 {
     
     .buttons {
         right: 8px;
-        gap: 5px;
+        gap: 10px;
     }
     .chat-message img {
         align-self: flex-start;
