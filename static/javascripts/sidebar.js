@@ -1,5 +1,6 @@
 const newCollection = document.querySelector("#new");
 const list = document.querySelector(".past");
+const tempDiv = document.querySelector(".temp_div");
 
 function openNav() {
   document.getElementById("mySidebar").style.width = "270px";
@@ -28,16 +29,25 @@ window.addEventListener("DOMContentLoaded", (event) => {
   console.log("Window width on DOMContentLoaded:", window.innerWidth);
   if (window.innerWidth <= 992) {
       closeNav(); // Close the sidebar if window width is exactly 429px
+      
+      list.addEventListener("click", function () {
+        closeNav();
+        tempDiv.innerHTML = "";
+      });
+      newCollection.addEventListener("click", function () {
+        closeNav();
+      });
   } else {
       openNav(); // Open the sidebar for other window widths
+      list.addEventListener("click", function () {
+        tempDiv.innerHTML = "";
+      });
   }
 });
 
 
-newCollection.addEventListener("click", function () {
-  closeNav();
-});
 
-list.addEventListener("click", function () {
-  closeNav();
-});
+
+// list.addEventListener("click", function () {
+//   closeNav();
+// });
