@@ -10,8 +10,8 @@ body {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     background-color: #ece7e7;
-    height: 100vh;
-    overflow: hidden;
+    /* height: 100vh;
+    overflow: hidden; */
 }
 
 /* Container */
@@ -123,6 +123,7 @@ body {
 
 /* Main content */
 main {
+    height: 100vh;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -185,7 +186,7 @@ h2 {
 
 .chat-container {
     width: 70vw;
-    height: 80%;
+    height: 76vh;
     padding: 10px;
     overflow: auto;
     border-radius: 10px;
@@ -393,7 +394,6 @@ h2 {
     }
     .chat-container {
         width: 100vw;
-        height: calc(100vh - 100px);
     }
     .input-field {
         height: 47px;
@@ -437,7 +437,7 @@ h2 {
     }
     .chat-container {
         width: 100vw;
-        height: 70%;
+        height: 70vh;
     }
     .input-field {
         width: 90vw;
