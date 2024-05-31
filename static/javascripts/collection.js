@@ -140,7 +140,7 @@ function toggleRead(message) {
 $(document).ready(function () {
     // Function to create a temporary list item with the name "Creating..."
     function createTemporaryListItem() {
-        let temporaryLi = $('<li class="temp-li">Creating...</li>'); // Add the class "temp-li"
+        let temporaryLi = $('<li>Creating...</li>');
         $('.history ul').prepend(temporaryLi); // Prepend the temporary list item
     }
 

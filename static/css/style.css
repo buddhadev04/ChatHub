@@ -17,7 +17,7 @@ body {
 #container {
     height: 100vh;
     display: flex;
-    overflow: visible;
+    /* overflow: hidden; */
 }
 
 /* Header */
@@ -437,7 +437,7 @@ h2 {
     }
     .chat-container {
         width: 100vw;
-        height: 70%;
+        height: 80vh;
     }
     .input-field {
         width: 90vw;
