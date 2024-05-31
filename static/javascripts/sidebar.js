@@ -1,3 +1,6 @@
+const newCollection = document.querySelector("#new");
+const list = document.querySelector(".past");
+
 function openNav() {
   document.getElementById("mySidebar").style.width = "270px";
   document.getElementById("user").style.display = "flex";
@@ -30,3 +33,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
   }
 });
 
+
+newCollection.addEventListener("click", function () {
+  closeNav();
+});
+
+list.addEventListener("click", function () {
+  closeNav();
+});
