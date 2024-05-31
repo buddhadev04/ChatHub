@@ -10,8 +10,7 @@ body {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     background-color: #ece7e7;
-    /* height: 100vh;
-    overflow: hidden; */
+    height: 100vh;
 }
 
 /* Container */
@@ -19,7 +18,6 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
 /* Header */
@@ -123,13 +121,11 @@ body {
 
 /* Main content */
 main {
-    height: 95vh;
-    flex-grow: 1;
+    height: 92vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: 0.5s;
-    overflow: hidden;
 }
 
 nav {
