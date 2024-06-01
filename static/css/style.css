@@ -16,7 +16,7 @@ body {
 #container {
     display: flex;
     flex-direction: column;
-    
+
 }
 
 /* Header */
@@ -438,6 +438,7 @@ h2 {
     }
     .input-field {
         width: 90vw;
+        height: 47px;
     }
     #chat-input {
         font-size: 14px;
@@ -448,9 +449,6 @@ h2 {
     }
     .custom-button img {
         height: 30px;
-    }
-    .input-field {
-        height: 47px;
     }
     #send-button img {
         height: 30px;
