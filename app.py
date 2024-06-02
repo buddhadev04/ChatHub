@@ -233,25 +233,6 @@ def create_new_collection():
     else:
         return jsonify({"error": "No default collection to remove"}), 400
 
-
-
-@app.route('/get_collections', methods=["GET"])
-def get_collections():
-    try:
-        username = session['user']['username']
-        user_db_name = username.replace('.', '_').lower()
-        user_db = client[user_db_name]
-        collection_names = user_db.list_collection_names()
-        
-        # Filter collections if necessary
-        # collection_names = [name for name in collection_names if some_condition(name)]
-        
-        return jsonify({"collections": collection_names})
-    except Exception as e:
-        return jsonify({"error": "An error occurred while fetching collections"}), 500
-
-
-
 # Route to get data from collection
 @app.route('/collection/<collection_name>')
 def get_collection_data(collection_name):
