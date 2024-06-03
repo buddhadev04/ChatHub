@@ -56,47 +56,45 @@
                 </div>
             </div>
             <main>
-                    <nav>
-                        <h2>ChatHub</h2>
-                    </nav>
-                    <div id="main">
-        <button class="openbtn" onclick="openNav()"><img src="static/images/menu.png" alt="">
-        </button>
-        </div>
-                    
-        <div class="chat-container">
-            <div class="temp_div">
-                <img src="static/images/bot.png" alt="" />
-                <p>Ready to serve You</p>
-            </div>
-            <div id="chat-messages">
-            </div>
-          </div>
-                    <form id="chat-form" method="POST" enctype="multipart/form-data">
-                        <div id="input">
-                            <div class="input-field">
-                                <input type="text" id="chat-input" placeholder="Type your message here...">
-                            <div class="buttons">
-                                <div class="image-upload">
-                                    <label for="file-upload" class="custom-button">
-                                        <img id="image-preview" src="static/images/image.png" alt="">
-                                    </label>
-                                    <input type="file" id="file-upload" name="file">
-                                    <button type="button" id="remove-image" style="display: none;">
-                                        <img src="static/images/close.png" alt="Remove">
-                                    </button>
+                <nav>
+                    <h2>ChatHub</h2>
+                </nav>
+                <div id="main">
+                    <button class="openbtn" onclick="openNav()"><img src="static/images/menu.png" alt=""></button>
+                </div>
+                    <div class="chat-container">
+                        <div class="temp_div">
+                            <img src="static/images/bot.png" alt="" />
+                            <p>Ready to serve You</p>
+                        </div>
+                        <div id="chat-messages"></div>
+                    </div>
+                    <div class="bottom-container">
+                        <form id="chat-form" method="POST" enctype="multipart/form-data">
+                            <div id="input">
+                                <div class="input-field">
+                                    <input type="text" id="chat-input" placeholder="Type your message here...">
+                                    <div class="buttons">
+                                        <div class="image-upload">
+                                            <label for="file-upload" class="custom-button">
+                                                <img id="image-preview" src="static/images/image.png" alt="">
+                                            </label>
+                                            <input type="file" id="file-upload" name="file">
+                                            <button type="button" id="remove-image" style="display: none;">
+                                                <img src="static/images/close.png" alt="Remove">
+                                            </button>
+                                        </div>
+                                        <button class="submit" type="submit" id="send-button">
+                                            <img src="static/images/paper-plane.png" alt="">
+                                        </button>
+                                    </div>
                                 </div>
-                                <button class="submit" type="submit" id="send-button">
-                                    <img src="static/images/paper-plane.png" alt="">
-                                </button>       
                             </div>
-                        </div>
-                        </div>
-                    </form>
+                        </form>
                         <div class="note">
                             <p>ChatHub can make mistakes. Consider checking important information.</p>
                         </div>
-                </div>
+                    </div>
             </main>
         </div>
     <script src="{{ url_for('static', filename='javascripts/messages.js') }}"></script>
