@@ -10,7 +10,7 @@ body {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     background-color: #ece7e7;
-    height: 100vh;
+    height: calc(100vh - 56px);;
     display: flex;
     flex-direction: column;
 }
