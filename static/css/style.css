@@ -194,7 +194,8 @@ h2 {
     overflow: auto;
     border-radius: 10px;
     position: relative;
-    height: calc(var(--vh, 1vh) * 100); /* Use the custom property */
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-message {
@@ -219,6 +220,13 @@ h2 {
 .temp_div img {
     height: 5rem;
     width: auto;
+}
+.bottom-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
 }
 
 .chat-message img {
