@@ -469,11 +469,14 @@ h2 {
         width: 30px;
     }
     .note{
-        font-size: 9px;
+        font-size: 10px;
     }
 }
 
 @media screen and (max-width: 480px) {
+    #container{
+        height: 90%;
+    }
     h2 {
         width: auto;
         text-align: center;
