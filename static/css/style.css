@@ -32,13 +32,7 @@ main {
     align-items: center;
     transition: 0.5s;
 }
-/* Content area */
-.content {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow: hidden;
-}
+
 
 /* Header */
 .new-collection {
@@ -196,11 +190,11 @@ h2 {
 .chat-container {
     flex-grow: 1;
     width: 70vw;
-    /* height: 80vh; */
     padding: 5px;
     overflow: auto;
     border-radius: 10px;
     position: relative;
+    height: calc(var(--vh, 1vh) * 100); /* Use the custom property */
 }
 
 .chat-message {
@@ -474,9 +468,6 @@ h2 {
 }
 
 @media screen and (max-width: 480px) {
-    #container{
-        height: 90%;
-    }
     h2 {
         width: auto;
         text-align: center;
