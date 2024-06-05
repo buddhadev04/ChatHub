@@ -7,7 +7,7 @@ from urllib.parse import quote_plus
 from flask_bcrypt import Bcrypt
 from PIL import Image
 from io import BytesIO
-from datetime import datetime, timedelta
+from datetime import timedelta
 import uuid
 from dotenv import load_dotenv
 import os
@@ -89,7 +89,6 @@ def sign_up():
 
     return render_template('index.html')
 
-# sign in route
 # sign in route
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_in():

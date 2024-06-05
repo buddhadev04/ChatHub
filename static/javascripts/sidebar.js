@@ -44,10 +44,3 @@ window.addEventListener("DOMContentLoaded", (event) => {
       });
   }
 });
-
-
-
-
-// list.addEventListener("click", function () {
-//   closeNav();
-// });
