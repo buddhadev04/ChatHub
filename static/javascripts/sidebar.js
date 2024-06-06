@@ -5,7 +5,6 @@ const tempDiv = document.querySelector(".temp_div");
 function openNav() {
   document.getElementById("mySidebar").style.width = "270px";
   document.getElementById("user").style.display = "flex";
-  // document.getElementById("user").style.position = "fixed"; // Show user div
   if(window.innerWidth >= 992){
     document.getElementById("main").style.marginLeft = "200px";
     document.querySelector("main").style.marginLeft = "270px";

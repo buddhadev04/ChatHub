@@ -12,49 +12,65 @@ import uuid
 from dotenv import load_dotenv
 import os
 
+# Load environment variables
 load_dotenv()
 
+# Initialize Flask app and extensions
 app = Flask(__name__)
-CORS(app)  # This will enable CORS for all routes
+CORS(app)
 bcrypt = Bcrypt(app)
 
-username = os.environ.get('MONGODB_USERNAME')
-password = os.environ.get('MONGODB_PASSWORD')
-
-encoded_username = quote_plus(username)
-encoded_password = quote_plus(password)
+# Configuration
+app.config['SECRET_KEY'] = 'buddhadev_das'  # Secret key for session security
+app.config['SESSION_PERMANENT'] = True  # Make session permanent
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)  # Set session lifetime
 
 # MongoDB setup
+username = os.environ.get('MONGODB_USERNAME')  # Get MongoDB username from environment
+password = os.environ.get('MONGODB_PASSWORD')  # Get MongoDB password from environment
+encoded_username = quote_plus(username)
+encoded_password = quote_plus(password)
+# MongoDB URI with username and password
 uri = f"mongodb+srv://{encoded_username}:{encoded_password}@cluster0.hsalqtk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-# Send a ping to confirm a successful connection
+client = MongoClient(uri, server_api=ServerApi('1'))  # Connect to MongoDB cluster
+
 try:
     client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
 
-db = client["information"]  # Database
-users_collection = db["users"]  # Collection for storing user information
+db = client["information"]  # Get database
+users_collection = db["users"]  # Get users collection
 
-# Secret key for session security
-app.config['SECRET_KEY'] = 'buddhadev_das'
-app.config['SESSION_PERMANENT'] = True
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)  # Session will last 7 days
+# Google GenAI setup
+api_key = os.environ.get('API_KEY')  # Get Google API key from environment
+genai.configure(api_key=api_key)  # Configure GenAI with API key
+model = genai.GenerativeModel("gemini-pro")  # Initialize GenerativeModel instance
+vision_model = genai.GenerativeModel("gemini-pro-vision")  # Initialize GenerativeModel instance for vision
 
-# Store chat sessions in memory using a dictionary
+# Store chat sessions in memory
 chat_sessions = {}
-# get the api key
-api_key = os.environ.get('API_KEY')
 
-genai.configure(api_key=api_key)
-# for text
-model = genai.GenerativeModel("gemini-pro")
-# for image
-vision_model = genai.GenerativeModel("gemini-pro-vision")
+# Helper functions
+def initialize_chat_session():
+    return {"chat_history": [], "chat": model.start_chat(history=[])}
 
-# sign up route
+def modified(text):
+    return text.replace("Gemini", "Chathub").replace("Google", "Buddhadev")
+
+def change_name(text):
+    return text.replace("chathub", "gemini")
+
+def save_message_to_collection(collection_name, user_message, assistant_message):
+    username = session['user']['username']
+    user_db_name = username.replace('.', '_').lower()
+    user_db = client[user_db_name]
+    message_collection = user_db[collection_name]
+    document_to_add = {"user": user_message, "assistant": assistant_message}
+    message_collection.insert_one(document_to_add)
+
+# Routes
 @app.route("/")
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
@@ -64,111 +80,70 @@ def sign_up():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        # Check if password and confirm password match
         if password != confirm_password:
             flash("Passwords do not match. Please try again.")
             return redirect(url_for('sign_up'))
 
-        # Hash the password
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        # Check if the email already exists
         if users_collection.find_one({"email": email}):
             flash("Email already signed up. Please use a different email.")
             return redirect(url_for('sign_up'))
 
         try:
-            # Insert user data into the main 'users' collection
             user_data = {"username": username, "email": email, "password": hashed_password}
             users_collection.insert_one(user_data)
             flash("Registration successful! Please log in.")
             return redirect(url_for('sign_in'))
         except Exception as e:
             flash("Error during registration. Please try again later.")
-            print("Error:", e)  # Print the error for debugging purposes
+            print("Error:", e)
 
     return render_template('index.html')
 
-# sign in route
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_in():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
 
-        # Check if the user exists and the password is correct
         user = users_collection.find_one({"email": email})
         if user and bcrypt.check_password_hash(user['password'], password):
-            session.permanent = True  # Make the session permanent
+            session.permanent = True
             session['user'] = {'username': user['username'], 'email': user['email']}
-            
-            flash("sign_in successful!")
+            flash("Sign in successful!")
             return redirect(url_for('conversation'))
         else:
-            flash("sign_in failed. Check your email and password.")
+            flash("Sign in failed. Check your email and password.")
     return render_template('index.html')
 
-
-
-# Logout route
 @app.route('/sign-out')
 def sign_out():
     session.pop('user', None)
     session.pop('default_collection_name', None)
-    session.permanent = False  # Set session to non-permanent on logout
-    flash("Sign Out successfull")
+    session.permanent = False
+    flash("Sign out successful")
     return redirect(url_for('sign_up'))
 
-# chat session
-def initialize_chat_session():
-    return {
-        "chat_history": [],
-        "chat": model.start_chat(history=[])
-    }
-
-# route to handle conversation
 @app.route('/conversation')
 def conversation():
     if 'user' in session:
         chat_session_id = session.get("chat_session_id")
         if not chat_session_id or chat_session_id not in chat_sessions:
             chat_session_id = str(len(chat_sessions) + 1)
-            chat_sessions[chat_session_id] = initialize_chat_session()  # Initialize regular chat session
+            chat_sessions[chat_session_id] = initialize_chat_session()
             session["chat_session_id"] = chat_session_id
-        
-        username = session['user']['username']
-        # Create a new collection for the user's chat messages (using a timestamp as collection name)
-        user_db_name = username.replace('.', '_').lower()  # Replace '.' with '_' in the email for MongoDB compatibility
-        
-        # Connect to the user's database
-        user_db = client[user_db_name]
 
+        username = session['user']['username']
+        user_db_name = username.replace('.', '_').lower()
+        user_db = client[user_db_name]
         user_collection_names = user_db.list_collection_names()
         chat_session = chat_sessions.get(chat_session_id, {})
         current_collection_name = session.get("default_collection_name")
         return render_template("conversation.html", chat_history=chat_session.get("chat_history", []), username=username, collection_names=user_collection_names, current_collection_name=current_collection_name)
-
     else:
         return redirect(url_for('sign_in'))
 
-# modifing the response
-def modified(text):
-    return text.replace("Gemini", "Chathub").replace("Google", "Buddhadev")
-
-# modifing the message
-def changeName(text):
-    return text.replace("chathub", "gemini")
-
-# Function to save message to a collection
-def save_message_to_collection(collection_name, user_message, assistant_message):
-    username = session['user']['username']
-    user_db_name = username.replace('.', '_').lower()
-    user_db = client[user_db_name]
-    message_collection = user_db[collection_name]
-    document_to_add = {"user": user_message, "assistant": assistant_message}
-    message_collection.insert_one(document_to_add)
-
-# Route to handle responses
 @app.route('/send_message', methods=["POST"])
 def send_message():
     chat_session_id = session.get("chat_session_id")
@@ -176,53 +151,37 @@ def send_message():
         return "Chat session not found", 404
 
     chat_session = chat_sessions[chat_session_id]
-    assistant = ""
     user_input = request.form.get("prompt", "")
-    prompt = changeName(user_input)
-    
+    prompt = change_name(user_input)
     collection_name = session.get("default_collection_name")
 
-    # If the default collection is not set, create a new one
     if not collection_name:
         username = session['user']['username']
         user_db_name = username.replace('.', '_').lower()
         user_db = client[user_db_name]
-        unique_id = str(uuid.uuid4())[:4]  # Extract first 4 characters of UUID
+        unique_id = str(uuid.uuid4())[:4]
         new_collection_name = f"{prompt.replace(' ', '_')}_{unique_id}"
         user_db.create_collection(new_collection_name)
         session["default_collection_name"] = new_collection_name
         collection_name = new_collection_name
 
-    # Check if an image file is uploaded
     image_file = request.files.get("file")
     if image_file:
         img_bytes = image_file.read()
         img = Image.open(BytesIO(img_bytes))
 
-        if prompt:
-            response = vision_model.generate_content([prompt, img])
-        else:
-            response = vision_model.generate_content(img)
-
+        response = vision_model.generate_content([prompt, img]) if prompt else vision_model.generate_content(img)
         assistant_response = modified(response.text)
-        # Save the response into the chat session
-        chat_session["chat_history"].append(("assistant", response.text))
-        # Save the message to the appropriate collection
-        save_message_to_collection(collection_name, prompt, assistant)
-        # Return the response text for updating the UI and the new collection name if created
+        chat_session["chat_history"].append(("assistant", assistant_response))
+        save_message_to_collection(collection_name, prompt, assistant_response)
         return jsonify({"response": assistant_response})
     else:
         chat_session["chat_history"].append(("user", prompt))
         response = chat_session["chat"].send_message(prompt)
         assistant_response = modified(response.text)
-        print(assistant_response)
         chat_session["chat_history"].append(("assistant", assistant_response))
-        # Save the message to the appropriate collection
         save_message_to_collection(collection_name, prompt, assistant_response)
-
-    # Return the response text for updating the UI and the new collection name if created
-    return jsonify({"response": assistant_response})
-
+        return jsonify({"response": assistant_response})
 
 @app.route('/create_new_collection', methods=['POST'])
 def create_new_collection():
@@ -232,81 +191,59 @@ def create_new_collection():
     else:
         return jsonify({"error": "No default collection to remove"}), 400
 
-# Route to get data from collection
 @app.route('/collection/<collection_name>')
 def get_collection_data(collection_name):
     if 'user' in session:
-        print(collection_name)
         session["default_collection_name"] = collection_name
         username = session['user']['username']
         user_db_name = username.replace('.', '_').lower()
         user_db = client[user_db_name]
-        # Retrieve documents from the specified collection in the user's database
         collection = user_db[collection_name]
-        documents = collection.find({}, {"_id": 0, "user": 1, "assistant": 1})  # Only fetch user and assistant fields
-        
-        # Convert documents to list of dictionaries
-        documents_list = [doc for doc in documents]
-        for doc in documents_list:
-            print(doc)
-        
+        documents = collection.find({}, {"_id": 0, "user": 1, "assistant": 1})
+        documents_list = list(documents)
         return jsonify(documents_list)
     else:
         return "User not logged in", 401
 
-
-
-
-    
-# route to delete a collection
 @app.route('/delete_collection', methods=['POST'])
 def delete_collection():
     if 'user' in session:
         username = session['user']['username']
-         # Get the name of the user's database
-        user_db_name = username.replace('.', '_').lower()  # Replace '.' with '_' in the email for MongoDB compatibility
+        user_db_name = username.replace('.', '_').lower()
         user_db = client[user_db_name]
-        
-        # Fetch the collection name from the input
         collection_name = request.form['collection_name']
-        print(collection_name)
-    try:
-        # Delete the collection
-        session.pop('default_collection_name', None)
-        print("deleted ", user_db[collection_name])
-        user_db[collection_name].drop()
-        return jsonify({'success': True})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
 
-# route for forgot password
+        try:
+            session.pop('default_collection_name', None)
+            user_db[collection_name].drop()
+            return jsonify({'success': True})
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
+    else:
+        return "User not logged in", 401
+
 @app.route("/reset_password", methods=["GET", "POST"])
 def reset_password():
     if request.method == "POST":
         email = request.form.get("email")
         new_password = request.form.get("new_password")
         confirm_password = request.form.get("confirm_password")
-        
-        # Check if the new password and confirm password match
+
         if new_password != confirm_password:
             flash("Passwords do not match. Please try again.")
             return redirect(url_for("reset_password"))
 
-        # Retrieve the user from the database
         user = users_collection.find_one({"email": email})
         if user:
-            # Update the user's password with the new password
             hashed_password = bcrypt.generate_password_hash(new_password).decode("utf-8")
-            print(user["email"])
             users_collection.update_one({"email": email}, {"$set": {"password": hashed_password}})
             flash("Password reset successful. You can now sign in with your new password.")
-            return redirect(url_for("sign_in"))  # Redirect to sign in page
+            return redirect(url_for("sign_in"))
         else:
             flash("Email not found. Please try again.")
             return redirect(url_for("reset_password"))
 
     return render_template("reset_password.html")
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000,debug = True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

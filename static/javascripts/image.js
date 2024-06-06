@@ -23,6 +23,5 @@ $(document).ready(function() {
         $('#file-upload').val(''); // Clear file input
         $('#remove-image').hide(); // Hide the remove button
 
-        // Your existing form submission code here...
     });
 });

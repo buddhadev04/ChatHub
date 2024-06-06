@@ -388,6 +388,7 @@ h2 {
 }
 
 /* Responsive styles */
+
 @media screen and (max-height: 450px) {
     .sidebar {
         padding-top: 15px;

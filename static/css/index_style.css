@@ -286,9 +286,6 @@ a {
     form.sign-up-form{
         display: none;
     }
-    .sign-up-mode2{
-        height: 100vh;
-    }
 }
 
 @media (max-width:375px) {
