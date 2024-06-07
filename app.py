@@ -11,6 +11,8 @@ from datetime import timedelta
 import uuid
 from dotenv import load_dotenv
 import os
+from flask_oauthlib.client import OAuth
+import requests
 
 # Load environment variables
 load_dotenv()
@@ -19,6 +21,23 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
+
+oauth = OAuth(app)
+
+google = oauth.remote_app(
+    'google',
+    consumer_key='1074106161005-vr34uqjm4v59vipcmiu1su8ss9r4fko5.apps.googleusercontent.com',
+    consumer_secret='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',
+    request_token_params={
+        'scope': 'email',
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
+
 
 # Configuration
 app.config['SECRET_KEY'] = 'buddhadev_das'  # Secret key for session security
@@ -101,6 +120,59 @@ def sign_up():
 
     return render_template('index.html')
 
+def check_google_user(email):
+    return users_collection.find_one({"email": email})
+
+def save_google_user(email):
+    username = email.split('@')[0]  # Use part of the email as the username
+    user_data = {"username": username, "email": email, "password": None}  # Password is None for Google users
+    users_collection.insert_one(user_data)
+    return user_data
+
+
+
+# sign up with google
+
+@app.route('/auth/google')
+def google_login():
+    return google.authorize(callback=url_for('google_callback', _external=True))
+
+@app.route('/auth/google/callback')
+def google_callback():
+    resp = google.authorized_response()
+    if resp is None or resp.get('access_token') is None:
+        return 'Access denied: reason={} error={}'.format(
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    
+    access_token = resp['access_token']
+    session['access_token'] = access_token
+    
+    userinfo_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
+    headers = {'Authorization': 'Bearer ' + access_token}
+    user_info = requests.get(userinfo_url, headers=headers)
+    
+    if user_info.status_code == 200:
+        email = user_info.json().get('email')
+        if email:
+            user = check_google_user(email)
+            if user:
+                # Existing user, proceed to conversation page
+                session['user'] = {'username': user['username'], 'email': user['email']}
+                return redirect(url_for('conversation'))
+            else:
+                # New user, save to database and then proceed to conversation page
+                user = save_google_user(email)
+                session['user'] = {'username': user['username'], 'email': user['email']}
+                return redirect(url_for('conversation'))
+        else:
+            return 'Email not found in user info'
+    else:
+        return 'Failed to fetch user info from Google API'
+
+
+
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_in():
     if request.method == 'POST':
@@ -111,7 +183,6 @@ def sign_in():
         if user and bcrypt.check_password_hash(user['password'], password):
             session.permanent = True
             session['user'] = {'username': user['username'], 'email': user['email']}
-            flash("Sign in successful!")
             return redirect(url_for('conversation'))
         else:
             flash("Sign in failed. Check your email and password.")
@@ -122,6 +193,14 @@ def sign_out():
     session.pop('user', None)
     session.pop('default_collection_name', None)
     session.permanent = False
+    # Revoke the access token
+    access_token = session.pop('access_token', None)
+    if access_token:
+        revoke_url = f'https://accounts.google.com/o/oauth2/revoke?token={access_token}'
+        requests.get(revoke_url)
+    
+    # Clear the user's session data
+    session.pop('email', None)
     flash("Sign out successful")
     return redirect(url_for('sign_up'))
 

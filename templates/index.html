@@ -26,19 +26,10 @@
                 </div>
                 <a id="forgot-password" href="/reset_password">forgot password?</a>
                 <input type="submit" value="Sign in" class="btn">
-                <p class="social-text">Or Sign in with social platform</p>
+                <p class="social-text">Or Sign in with Google</p>
                 <div class="social-media">
-                    <a href="#" class="social-icon">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="" class="social-icon">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="" class="social-icon">
-                        <i class="fab fa-google"></i>
-                    </a>
-                    <a href="" class="social-icon">
-                        <i class="fab fa-linkedin-in"></i>
+                    <a href="/auth/google" class="social-icon">
+                        <i class="fab fa-google" id="google-icon1"></i>
                     </a>
                 </div>
                 <p class="account-text">Don't have an account? <a href="#" id="sign-up-btn2">Sign up</a></p>
@@ -62,19 +53,10 @@
                     <input type="password" name="confirm_password" placeholder="Confirm Password" required>
                 </div>
                 <input type="submit" value="Sign up" class="btn">
-                <p class="social-text">Or Sign in with social platform</p>
+                <p class="social-text">Or Sign in with Google</p>
                 <div class="social-media">
-                    <a href="#" class="social-icon">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    <a href="" class="social-icon">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="" class="social-icon">
-                        <i class="fab fa-google"></i>
-                    </a>
-                    <a href="" class="social-icon">
-                        <i class="fab fa-linkedin-in"></i>
+                    <a href="/auth/google" class="social-icon">
+                        <i class="fab fa-google" id="google-icon2"></i>
                     </a>
                 </div>
                 <p class="account-text">Already have an account? <a href="#" id="sign-in-btn2">Sign in</a></p>
@@ -100,6 +82,13 @@
         </div>
     </div>
     <script src="{{ url_for('static', filename='javascripts/app.js') }}"></script>
-</body>
+    
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{ messages[0] }}");
+        </script>
+    {% endif %}
+{% endwith %}
 
 </html>
