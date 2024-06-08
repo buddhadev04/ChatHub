@@ -23,11 +23,12 @@ CORS(app)
 bcrypt = Bcrypt(app)
 
 oauth = OAuth(app)
-
+client_id = os.environ.get('CLIENT_ID')
+client_secret = os.environ.get('CLIENT_SECRET')
 google = oauth.remote_app(
     'google',
-    consumer_key='1074106161005-vr34uqjm4v59vipcmiu1su8ss9r4fko5.apps.googleusercontent.com',
-    consumer_secret='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',
+    consumer_key=client_id,
+    consumer_secret=client_secret,
     request_token_params={
         'scope': 'email',
     },
@@ -40,7 +41,8 @@ google = oauth.remote_app(
 
 
 # Configuration
-app.config['SECRET_KEY'] = 'buddhadev_das'  # Secret key for session security
+secret_key = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = secret_key  # Secret key for session security
 app.config['SESSION_PERMANENT'] = True  # Make session permanent
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)  # Set session lifetime
 
