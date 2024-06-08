@@ -140,59 +140,6 @@ def sign_in():
     return render_template('index.html')
 
 
-def check_google_user(email):
-    return users_collection.find_one({"email": email})
-
-def save_google_user(email):
-    username = email.split('@')[0]  # Use part of the email as the username
-    user_data = {"username": username, "email": email, "password": None}  # Password is None for Google users
-    users_collection.insert_one(user_data)
-    return user_data
-
-
-
-# sign up with google
-
-@app.route('/auth/google')
-def google_login():
-    return google.authorize(callback=url_for('google_callback', _external=True))
-
-@app.route('/auth/google/callback')
-def google_callback():
-    resp = google.authorized_response()
-    if resp is None or resp.get('access_token') is None:
-        return 'Access denied: reason={} error={}'.format(
-            request.args['error_reason'],
-            request.args['error_description']
-        )
-    
-    access_token = resp['access_token']
-    session['access_token'] = access_token
-    
-    userinfo_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
-    headers = {'Authorization': 'Bearer ' + access_token}
-    user_info = requests.get(userinfo_url, headers=headers)
-    
-    if user_info.status_code == 200:
-        email = user_info.json().get('email')
-        if email:
-            user = check_google_user(email)
-            if user:
-                # Existing user, proceed to conversation page
-                session['user'] = {'username': user['username'], 'email': user['email']}
-                return redirect(url_for('conversation'))
-            else:
-                # New user, save to database and then proceed to conversation page
-                user = save_google_user(email)
-                session['user'] = {'username': user['username'], 'email': user['email']}
-                return redirect(url_for('conversation'))
-        else:
-            return 'Email not found in user info'
-    else:
-        return 'Failed to fetch user info from Google API'
-
-
-
 @app.route('/sign-out')
 def sign_out():
     session.pop('user', None)
