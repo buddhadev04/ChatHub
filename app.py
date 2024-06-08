@@ -11,8 +11,6 @@ from datetime import timedelta
 import uuid
 from dotenv import load_dotenv
 import os
-from flask_oauthlib.client import OAuth
-import requests
 
 # Load environment variables
 load_dotenv()
@@ -21,23 +19,6 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
-
-oauth = OAuth(app)
-client_id = os.environ.get('CLIENT_ID')
-client_secret = os.environ.get('CLIENT_SECRET')
-google = oauth.remote_app(
-    'google',
-    consumer_key=client_id,
-    consumer_secret=client_secret,
-    request_token_params={
-        'scope': 'email',
-    },
-    base_url='https://www.googleapis.com/oauth2/v1/',
-    request_token_url=None,
-    access_token_method='POST',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-)
 
 
 # Configuration
