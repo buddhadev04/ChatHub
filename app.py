@@ -114,7 +114,6 @@ def sign_in():
         if user and bcrypt.check_password_hash(user['password'], password):
             session.permanent = True
             session['user'] = {'username': user['username'], 'email': user['email']}
-            flash("Sign in successful!")
             return redirect(url_for('conversation'))
         else:
             flash("Sign in failed. Check your email and password.")

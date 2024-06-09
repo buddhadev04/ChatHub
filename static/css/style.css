@@ -206,6 +206,14 @@ h2 {
     gap: 1rem;
     font-size: 15px;
 }
+.user-message{
+    background-color:#f3efef;
+    width: fit-content;
+    padding: 5px;
+}
+.assistant-message{
+    padding: 5px;
+}
 
 .temp_div {
     position: absolute;
