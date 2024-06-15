@@ -245,7 +245,7 @@ h2 {
     flex-grow: 1;
     width: 50vw;
     height: 53px;
-    border-radius: 10px;
+    border-radius: 30px;
     border: 1px solid black;
     display: flex;
     align-items: center;
@@ -277,6 +277,7 @@ h2 {
 
 .image-upload {
     position: relative;
+    margin-top: 5px;
 }
 
 .custom-button img {
