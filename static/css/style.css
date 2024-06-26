@@ -283,7 +283,7 @@ h2 {
 
 .custom-button img {
     cursor: pointer;
-    height: 35px;
+    height: 33px;
 }
 
 #file-upload {
@@ -316,8 +316,8 @@ h2 {
 }
 
 #send-button img {
-    height: 40px;
-    width: 40px;
+    height: 35px;
+    width: 35px;
 }
 
 .note {
